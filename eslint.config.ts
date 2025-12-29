@@ -1,3 +1,4 @@
+import type { Severity } from '@eslint/core'
 import js from '@eslint/js'
 import json from '@eslint/json'
 import markdown from '@eslint/markdown'
@@ -9,9 +10,9 @@ import typescriptEslint from 'typescript-eslint'
 
 const strictMode = process.env.STRICT_MODE === 'true'
 
-const warningInStrictMode = strictMode ? 'warn' : 0
-const errorInStrictMode = strictMode ? 'error' : 0
-const errorInStrictModeAndWarningOtherwise = strictMode ? 'error' : 'warn'
+const warningInStrictMode: Severity = strictMode ? 'warn' : 'off'
+const errorInStrictMode: Severity = strictMode ? 'error' : 'off'
+const errorInStrictModeAndWarningOtherwise: Severity = strictMode ? 'error' : 'warn'
 
 export default defineConfig([
   {
@@ -38,6 +39,7 @@ export default defineConfig([
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     rules: {
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',

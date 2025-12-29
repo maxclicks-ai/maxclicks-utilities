@@ -7,6 +7,13 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "sideEffects": false,
   "files": [
     "dist",
     "README.md",
@@ -33,7 +40,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/maxclicks-ai/maxclicks-utilities"
+    "url": "git+https://github.com/maxclicks-ai/maxclicks-utilities.git"
   },
   "publishConfig": {
     "access": "public"
@@ -47,6 +54,7 @@
     "json5": "^2.2.3"
   },
   "devDependencies": {
+    "@eslint/core": "^1.0.0",
     "@eslint/js": "^9.39.2",
     "@eslint/json": "^0.14.0",
     "@eslint/markdown": "^7.5.1",
