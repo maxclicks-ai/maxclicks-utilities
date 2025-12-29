@@ -1,6 +1,6 @@
 {
   "name": "@maxclicks/utilities",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The common utility implementations shared by maxclicks projects",
   "author": "maxclicks",
   "license": "MIT",
@@ -43,7 +43,8 @@
     "npm": ">=11.6.2"
   },
   "dependencies": {
-    "@swc/helpers": "^0.5.17"
+    "@swc/helpers": "^0.5.17",
+    "json5": "^2.2.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
