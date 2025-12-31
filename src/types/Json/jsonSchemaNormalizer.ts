@@ -146,7 +146,7 @@ export const jsonSchemaNormalizer = jsonNormalizer.chain((value, warn): Json.Sch
       throw new Error(
         `When type is "array", these properties are not supported: ${unsupportedKeys.map(k => `"${k}"`).join(', ')}.`
       )
-    if (items !== undefined) jsonSchemaNormalizer.required.normalize(items).getValue('items', warn)
+    jsonSchemaNormalizer.required.normalizeIfExists(items).getValue('items', warn)
     if (minItems !== undefined) {
       if (typeof minItems !== 'number') throw new Error('"minItems" must be a number.')
       if (minItems < 0) throw new Error('"minItems" cannot be negative.')

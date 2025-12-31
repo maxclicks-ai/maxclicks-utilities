@@ -19,7 +19,27 @@ export class Normalizer<Value> {
   constructor(readonly parseOrThrow: Normalizer.ParseOrThrow<Value>) {}
 
   /** Runs the normalizer, returning a `Normalized` result with value or error. */
-  normalize<V>(value: V): Normalizer.Normalized<undefined extends V ? Value | undefined : Value> {
+  normalize(value: any): Normalizer.Normalized<Value> {
+    const warn = Normalizer.Warn.create()
+    try {
+      if (value === undefined) throw new Error('Undefined.')
+      const parsedValue = this.parseOrThrow(value, warn)
+      return new Normalizer.Normalized({
+        warningMessage: warn.message,
+        value: parsedValue as Value,
+      })
+    } catch (error) {
+      return new Normalizer.Normalized({
+        errorMessage: getErrorMessage(error),
+      })
+    }
+  }
+
+  /**
+   * Runs the normalizer, returning a `Normalized` result with value or error.
+   * Passes `undefined` as it is, suitable to normalized optional (not nullable) values.
+   */
+  normalizeIfExists<V>(value: V): Normalizer.Normalized<undefined extends V ? Value | undefined : Value> {
     const warn = Normalizer.Warn.create()
     try {
       const parsedValue = value === undefined ? undefined : this.parseOrThrow(value, warn)
@@ -65,7 +85,29 @@ export namespace Normalizer {
     constructor(readonly parseOrThrowAsync: ParseOrThrowAsync<Value>) {}
 
     /** Runs the async normalizer, returning a `Normalized` result. */
-    async normalize<V>(
+    async normalize(value: any, abortSignal?: AbortSignal): Promise<Normalized<Value>> {
+      const warn = Warn.create()
+      try {
+        if (abortSignal?.aborted) throw new Error('Aborted.')
+        if (value === undefined) throw new Error('Undefined.')
+        const parsedValue = await this.parseOrThrowAsync(value, warn, abortSignal)
+        if (abortSignal?.aborted) throw new Error('Aborted.')
+        return new Normalized({
+          warningMessage: warn.message,
+          value: parsedValue as Value,
+        })
+      } catch (error) {
+        return new Normalized({
+          errorMessage: abortSignal?.aborted ? 'Aborted.' : getErrorMessage(error),
+        })
+      }
+    }
+
+    /**
+     * Runs the async normalizer, returning a `Normalized` result with value or error.
+     * Passes `undefined` as it is, suitable to normalized optional (not nullable) values.
+     */
+    async normalizeIfExists<V>(
       value: V,
       abortSignal?: AbortSignal
     ): Promise<Normalized<undefined extends V ? Value | undefined : Value>> {

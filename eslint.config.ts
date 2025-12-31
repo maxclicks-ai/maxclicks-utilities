@@ -34,6 +34,7 @@ export default defineConfig([
       'spaced-comment': [errorInStrictModeAndWarningOtherwise, 'always', { markers: ['/'] }],
     },
   },
+
   typescriptEslint.configs.recommended,
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
@@ -46,6 +47,7 @@ export default defineConfig([
       '@typescript-eslint/no-unused-vars': 'off',
     },
   },
+
   {
     files: ['**/*.json'],
     plugins: { json },
@@ -53,6 +55,7 @@ export default defineConfig([
     extends: ['json/recommended'],
     ignores: ['package-lock.json', 'dist/**'],
   },
+
   {
     files: ['**/*.json5'],
     plugins: { json },
@@ -60,6 +63,7 @@ export default defineConfig([
     extends: ['json/recommended'],
     ignores: ['dist/**'],
   },
+
   {
     files: ['**/*.md'],
     plugins: { markdown },

@@ -30,17 +30,17 @@ export namespace Address {
           })
           .normalize(value.lines),
         city: Normalizer.string.required.normalize(value.city),
-        state: Normalizer.string.required.normalize(value.state ?? null),
-        postalCode: Normalizer.string.required.normalize(value.postalCode ?? null),
+        state: Normalizer.string.required.normalizeIfExists(value.state),
+        postalCode: Normalizer.string.required.normalizeIfExists(value.postalCode),
         country: Normalizer.string.required.normalize(value.country),
-        formatted: Normalizer.string.required.normalize(value.formatted ?? null),
+        formatted: Normalizer.string.required.normalizeIfExists(value.formatted),
         latitude: Normalizer.number
           .chain(Normalizer.numberLimitRange(-90, 90))
-          .required.normalize(value.latitude ?? null),
+          .required.normalizeIfExists(value.latitude),
         longitude: Normalizer.number
           .chain(Normalizer.numberLimitRange(-180, 180))
-          .required.normalize(value.longitude ?? null),
-        timezone: Normalizer.string.required.normalize(value.timezone ?? null),
+          .required.normalizeIfExists(value.longitude),
+        timezone: Normalizer.string.required.normalizeIfExists(value.timezone),
       }).getValue(warn)
     })
 }
