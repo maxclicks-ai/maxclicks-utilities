@@ -221,7 +221,7 @@ export namespace Normalizer {
     static combine<T extends { readonly [K in string]: any } | readonly any[]>(
       normalizedItems: T,
       labelByKey?: { readonly [K in keyof T]?: string | Falsy }
-    ): Normalized<{ -readonly [K in keyof T]: Exclude<T[K] extends Normalized<infer V> ? V : T[K], undefined> }> {
+    ): Normalized<{ -readonly [K in keyof T]: T[K] extends Normalized<infer V> ? V : T[K] }> {
       const normalizedItemsByKey = (
         Array.isArray(normalizedItems)
           ? arrayHelpers.toDictionary(
@@ -236,9 +236,7 @@ export namespace Normalizer {
 
       const warningMessage = combineMessages.warnings(normalizedItemsByKey)
       const value = Array.isArray(normalizedItems)
-        ? (normalizedItems as readonly Normalized<any>[])
-            .map(item => (item instanceof Normalizer ? item.value : item))
-            .filter(item => item !== undefined)
+        ? (normalizedItems as readonly Normalized<any>[]).map(item => (item instanceof Normalizer ? item.value : item))
         : objectHelpers.onlyExisting(
             objectHelpers.map(normalizedItems as { readonly [K in string]: Normalized<any> }, (key, value) =>
               value instanceof Normalizer ? value.value : value
