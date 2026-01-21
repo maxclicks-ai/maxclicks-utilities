@@ -8,19 +8,16 @@ import { jsonSchemaSatisfies } from './jsonSchemaSatisfies'
 // For more details about JSON schema, see: https://json-schema.org/draft/2020-12
 
 /** Recursive type representing any valid JSON value. */
-export type Json = null | string | number | boolean | readonly Json[] | { readonly [key: string]: Json }
+export type Json = null | string | number | boolean | readonly Json[] | { readonly [key: string]: Json | undefined }
 
 export namespace Json {
   /** Parses a JSON5 string. Throws on invalid input. */
-  export function parse<T extends Json = Json>(
-    value: string,
-    reviver?: ((this: any, key: string, value: any) => any) | null
-  ): T {
+  export function parse<T = any>(value: string, reviver?: ((this: any, key: string, value: any) => any) | null): T {
     return json5.parse(value, reviver)
   }
 
   /** Parses a JSON5 string. Returns `{ errorMessage }` on failure instead of throwing. */
-  export function parseSafe<T extends Json = Json>(
+  export function parseSafe<T = any>(
     value: string,
     reviver?: ((this: any, key: string, value: any) => any) | null
   ): { value: T; errorMessage?: undefined } | { value?: undefined; errorMessage: string } {
@@ -33,7 +30,7 @@ export namespace Json {
 
   /** Converts a JSON value to a JSON5 string. */
   export function stringify(
-    value: Json,
+    value: any,
     replacer?: ((this: any, key: string, value: any) => any) | (string | number)[] | null,
     space?: string | number | null,
     quote?: string | null
@@ -43,7 +40,7 @@ export namespace Json {
 
   /** Converts a JSON value to a JSON5 string. Returns `{ errorMessage }` on failure. */
   export function stringifySafe(
-    value: Json,
+    value: any,
     replacer?: ((this: any, key: string, value: any) => any) | (string | number)[] | null,
     space?: string | number | null,
     quote?: string | null
