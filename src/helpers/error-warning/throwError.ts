@@ -7,6 +7,6 @@
  * inside the `switch` blocks' `default` sections while having TypeScript still
  * complaining about the missing `case` sections.
  */
-export function throwError<R = void>(message?: string): R {
-  throw new Error(message)
+export function throwError<R = void>(error?: string | Error): R {
+  throw typeof error === 'string' ? new Error(error) : error
 }
