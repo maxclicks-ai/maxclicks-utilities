@@ -1,4 +1,4 @@
-import type { Falsy, Trucy } from '../../types'
+import { Falsy, Trucy } from '../../types'
 
 interface ArrayHelpers {
   /** Array.isArray only works correctly on writable arrays not readonly ones. */

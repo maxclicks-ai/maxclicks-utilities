@@ -1,6 +1,6 @@
 {
   "name": "@maxclicks/utilities",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "The common utility implementations shared by maxclicks projects",
   "license": "MIT",
   "type": "module",
