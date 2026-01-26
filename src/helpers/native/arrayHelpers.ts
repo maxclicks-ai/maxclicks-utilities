@@ -1,17 +1,5 @@
 import type { Falsy, Trucy } from '../../types'
 
-/**
- * Collection of typed array utilities that improve on native array methods.
- *
- * Includes operations for:
- * - Comparison (`equals`)
- * - Accessing elements (`first`, `last`)
- * - Sorting/ordering (`sortBy`, `orderBy` and descending variants)
- * - Deduplication (`distinct`, `distinctString`)
- * - Grouping/dictionaries (`groupBy`, `toDictionary`)
- * - Modification (`remove`, `replace` and index variants)
- * - Map+filter combos (`mapFind`, `mapFilter`, `filterFalsy`)
- */
 interface ArrayHelpers {
   /** Array.isArray only works correctly on writable arrays not readonly ones. */
   isArray(value: any): value is readonly any[]
@@ -114,7 +102,6 @@ interface ArrayHelpers {
   buildTruthy<T>(...items: readonly (T | Falsy)[]): T[]
 }
 
-/** Collection of typed array utilities. */
 export const arrayHelpers: ArrayHelpers = {
   isArray: Array.isArray,
 

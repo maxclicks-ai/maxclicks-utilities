@@ -1,16 +1,5 @@
-import type { Writable } from '../../types'
+import type { DeepWritable } from '../../types'
 
-/**
- * Collection of typed object utilities that improve on native `Object` methods.
- *
- * Includes operations for:
- * - Typed iteration (`keys`, `values`, `entries`)
- * - Picking/omitting properties (`pick`, `omit`)
- * - Key lookup (`keyFor`, `findKey`)
- * - Filtering (`onlyExisting`, `diff`)
- * - Transformation (`map`, `modify`)
- * - Composition (`mergeInto`, `extendBy`)
- */
 interface ObjectHelpers {
   /** Object.keys reduces key type to string. */
   keys<T>(object: T): (keyof T)[]
@@ -30,14 +19,23 @@ interface ObjectHelpers {
 
   map<T, U>(opject: T, mapper: (key: keyof T, value: T[keyof T]) => U): Record<keyof T, U>
 
-  mergeInto<E, T>(extension: E, objectFactory: (extension: E) => T): Omit<T, keyof E> & E
-  extendBy<T, E>(object: T, extensionFactory: (object: T) => E): Omit<T, keyof E> & E
-  modify<T>(object: T, modifier: (object: Writable<T>) => void | T): T
+  mergeInto<E, T>(
+    extension: E,
+    objectFactory: (extension: E) => T
+  ): Omit<T, keyof E> &
+    (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
+    E
+  extendBy<T, E>(
+    object: T,
+    extensionFactory: (object: T) => E
+  ): Omit<T, keyof E> &
+    (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
+    E
+  modify<T>(object: T, modifier: (object: DeepWritable<T>) => void | T): T
 }
 
 const integerRegex = /^[0-9]+$/
 
-/** Collection of typed object utilities. */
 export const objectHelpers: ObjectHelpers = {
   keys(object: any): any[] {
     return Object.keys(object)

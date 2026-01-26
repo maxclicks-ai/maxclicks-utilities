@@ -1,4 +1,3 @@
-/** Collection of string manipulation utilities. */
 interface StringHelpers {
   /** Inserts content at a specific index. */
   insert(value: string, index: number, content: string): string
@@ -8,7 +7,6 @@ interface StringHelpers {
   indent(value: string, indentation: string): string
 }
 
-/** Collection of string manipulation utilities. */
 export const stringHelpers: StringHelpers = {
   insert(value, index, content) {
     return `${value.slice(0, index)}${content}${value.slice(index)}`
