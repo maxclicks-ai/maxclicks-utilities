@@ -422,9 +422,21 @@ export namespace Normalizer {
     }
   }
 
+  /** Simplifies normalization of object properties with a stronger type guarantee. */
+  export function objectProperties<T extends {}>(
+    normalizeProperties: (value: T) => Normalized.Items<T>
+  ): ParseOrThrow<T | null, Record<string, any> | null> {
+    return (value, warn) => (value ? (Normalized.combine(normalizeProperties(value as T)).getValue(warn) as T) : null)
+  }
+
   /** Normalizer that wraps non-array values in an array. Returns empty array for null. */
   export const array = new Normalizer((value, warn) => {
     if (value === null) return []
     return (arrayHelpers.isArray(value) ? value : [value]) as any[]
   })
+
+  /** Simplifies normalization of array items with a stronger type guarantee. */
+  export function arrayItems<I>(itemNormalizer: Normalizer<I>): Normalizer.ParseOrThrow<I[], any[]> {
+    return (value, warn) => Normalized.combine(value.map(item => itemNormalizer.normalize(item))).getValue(warn)
+  }
 }
