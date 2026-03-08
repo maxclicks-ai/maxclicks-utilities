@@ -22,6 +22,7 @@ export * from './helpers/normalizeArrayInline'
 export * from './helpers/normalizeObjectInline'
 export * from './helpers/optional'
 export * from './helpers/percent'
+export * from './helpers/safeCall'
 export * from './helpers/typed'
 
 export * from './modules/common-normalizers/descriptionNormalizer'

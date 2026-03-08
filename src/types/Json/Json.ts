@@ -16,7 +16,7 @@ export namespace Json {
     return json5.parse(value, reviver)
   }
 
-  /** Parses a JSON5 string. Returns `{ errorMessage }` on failure instead of throwing. */
+  /** @deprecated Use `parse` along with `callSafe` utility function instead. */
   export function parseSafe<T = any>(
     value: string,
     reviver?: ((this: any, key: string, value: any) => any) | null
@@ -38,7 +38,7 @@ export namespace Json {
     return json5.stringify(value, { replacer, space, quote })
   }
 
-  /** Converts a JSON value to a JSON5 string. Returns `{ errorMessage }` on failure. */
+  /** @deprecated Use `stringify` along with `callSafe` utility function instead. */
   export function stringifySafe(
     value: any,
     replacer?: ((this: any, key: string, value: any) => any) | (string | number)[] | null,

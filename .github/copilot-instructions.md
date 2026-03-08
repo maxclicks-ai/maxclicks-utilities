@@ -22,6 +22,30 @@ if (someVeryLongCondition && anotherCondition) throw new Error('Longer error mes
 
 Use braces when: multiple statements, complex nested logic, or readability benefits.
 
+### Avoid `'key' in obj` for Type Checking
+
+Don't use `'key' in obj` to detect properties — it bypasses TypeScript's type system and won't break if types change.
+
+Instead:
+
+- Use **type guard functions** to narrow discriminated unions (encapsulate the `in` check in one place).
+- **Cast** to the expected type and check properties with `!== undefined`.
+
+```typescript
+// Bad — not type-safe:
+if ('minLength' in schema) parts.push(`minLength=${schema.minLength}`)
+
+// Good — cast and check:
+const string = schema as StringValidation
+if (string.minLength !== undefined) parts.push(`minLength=${string.minLength}`)
+
+// Good — type guard for discriminated union members:
+function isConstSchema(schema: Schema): schema is ConstValidation {
+  return 'const' in schema
+}
+if (isConstSchema(schema)) return schema.const
+```
+
 ### Naming: Fully Spelled Names
 
 Use fully spelled names, not abbreviations:
