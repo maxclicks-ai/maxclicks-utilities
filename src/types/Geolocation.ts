@@ -1,4 +1,5 @@
 import { DateTime } from './DateTime'
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** Geographic coordinates with optional accuracy and motion data. */
@@ -29,4 +30,19 @@ export namespace Geolocation {
         timestamp: DateTime.normalizer.required.normalizeIfExists(value.timestamp),
       }).getValue(warn)
     })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'object',
+    properties: {
+      latitude: { type: 'number', minimum: -90, maximum: 90 },
+      longitude: { type: 'number', minimum: -180, maximum: 180 },
+      altitude: { type: 'number' },
+      horizontalAccuracy: { type: 'number' },
+      verticalAccuracy: { type: 'number' },
+      heading: { type: 'number', minimum: 0, maximum: 359 },
+      speed: { type: 'number' },
+      timestamp: DateTime.jsonSchema,
+    },
+    required: ['latitude', 'longitude'],
+  }
 }

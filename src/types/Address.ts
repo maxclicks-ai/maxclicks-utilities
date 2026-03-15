@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** Structured postal address with optional geolocation. */
@@ -43,4 +44,25 @@ export namespace Address {
         timezone: Normalizer.string.required.normalizeIfExists(value.timezone),
       }).getValue(warn)
     })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'object',
+    properties: {
+      lines: {
+        type: 'array',
+        items: { type: 'string' },
+        minItems: 1,
+        maxItems: 3,
+      },
+      city: { type: 'string' },
+      state: { type: 'string' },
+      postalCode: { type: 'string' },
+      country: { type: 'string' },
+      formatted: { type: 'string' },
+      latitude: { type: 'number', minimum: -90, maximum: 90 },
+      longitude: { type: 'number', minimum: -180, maximum: 180 },
+      timezone: { type: 'string' },
+    },
+    required: ['lines', 'city', 'country'],
+  }
 }

@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** A phone number string with optional leading `+`. */
@@ -11,6 +12,11 @@ export namespace Phone {
     if (refinedValue.length > 15) throw new Error('Phone number too long.')
     return refinedValue
   })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'string',
+    description: 'A phone number string with optional leading `+`.',
+  }
 }
 
 const REGEXP = /^\+?\d{3,}$/

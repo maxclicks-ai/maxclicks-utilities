@@ -1,5 +1,5 @@
 import { DeepWritable } from '../types'
-import { Json } from '../types/Json/Json'
+import { Json } from '../types/Json'
 
 /** Creates a deep copy of a JSON value, removing readonly modifiers from the type. */
 export function deepClone<T extends Json>(value: T): DeepWritable<T> {

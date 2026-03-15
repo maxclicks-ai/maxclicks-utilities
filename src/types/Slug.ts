@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** A URL-friendly string consisting of lowercase letters, numbers, and dash (-) characters. */
@@ -11,6 +12,11 @@ export namespace Slug {
     if (REGEX.test(value)) throw new Error('Only latin letters, numbers, and "-" characters are allowed.')
     return value
   })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'string',
+    description: 'A URL-friendly string consisting of lowercase letters, numbers, and dash (-) characters.',
+  }
 }
 
 const REGEX = /[^a-z0-9-]/

@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** ISO formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ` */
@@ -18,4 +19,10 @@ export namespace DateTime {
     const refinedValue: DateTime = date.toISOString()
     return refinedValue
   })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'string',
+    format: 'date-time',
+    description: 'ISO formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ`',
+  }
 }

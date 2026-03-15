@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** ISO formatted date string: `YYYY-MM-DD` */
@@ -19,4 +20,10 @@ export namespace DateOnly {
     const refinedValue: DateOnly = `${date.getFullYear().toString().padStart(4, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
     return refinedValue
   })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'string',
+    format: 'date',
+    description: 'ISO formatted date string: `YYYY-MM-DD`',
+  }
 }

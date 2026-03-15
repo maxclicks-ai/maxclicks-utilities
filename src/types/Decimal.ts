@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** String representation for decimal numbers with up to 15 integer and 5 fractional digits, with support for negative values. */
@@ -15,6 +16,12 @@ export namespace Decimal {
       fractionalPart.length > 0 ? `${sign}${integerPart}.${fractionalPart}` : `${sign}${integerPart}`
     return refinedValue
   })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'string',
+    description:
+      'String representation for decimal numbers with up to 15 integer and 5 fractional digits, with support for negative values.',
+  }
 }
 
 const CHECK_REGEX = /^-?\d+(\.\d+)?$/

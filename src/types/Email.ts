@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** A lowercase email address string. */
@@ -10,6 +11,12 @@ export namespace Email {
     if (!REGEXP.test(refinedValue)) throw new Error('Invalid email address.')
     return refinedValue
   })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'string',
+    format: 'email',
+    description: 'A lowercase email address string.',
+  }
 }
 
 const REGEXP =

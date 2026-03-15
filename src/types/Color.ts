@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** A string representing a color, typically in hexadecimal format. */
@@ -19,4 +20,9 @@ export namespace Color {
     }
     return value
   })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'string',
+    description: 'A string representing a color, typically in hexadecimal format.',
+  }
 }

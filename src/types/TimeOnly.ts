@@ -1,3 +1,4 @@
+import { Json } from './Json'
 import { Normalizer } from './Normalizer'
 
 /** ISO formatted time string: `HH:mm:ss.sss` */
@@ -22,6 +23,11 @@ export namespace TimeOnly {
 
     throw new Error('Invalid time.')
   })
+
+  export const jsonSchema: Json.Schema = {
+    type: 'string',
+    description: 'ISO formatted time string: `HH:mm:ss.sss`',
+  }
 }
 
 const REGEX = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,3})$/
