@@ -65,5 +65,7 @@ void (async function () {
   execSync(`git push origin ${tag}`, { stdio: 'inherit' })
 
   console.log(`\n✓ Tag ${tag} pushed. GitHub Actions will publish to npm.`)
-  console.log(`  Watch progress: ${repoUrl}/actions`)
+  console.log(`  Watch progress:`)
+  console.log(`  - Open:   ${repoUrl}/actions`)
+  console.log(`  - Run:    gh run watch`)
 })()
