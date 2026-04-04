@@ -19,9 +19,9 @@ export function alterError<R>(action: () => R, handleError: (error: unknown) => 
 export namespace alterError {
   /** Async variant of `alterError`. */
   export async function async<R>(
-    action: () => Promise<R>,
+    action: () => R,
     handleError: (error: unknown) => string | Error | Falsy
-  ): Promise<R> {
+  ): Promise<Awaited<R>> {
     try {
       return await action()
     } catch (error) {

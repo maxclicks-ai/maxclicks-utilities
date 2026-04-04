@@ -167,7 +167,6 @@ export const arrayHelpers: ArrayHelpers = {
       return array.indexOf(item) === index
     }
   },
-
   distinctString(array: readonly string[]): any[] {
     const object: any = {}
     array.forEach(item => {
