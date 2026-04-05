@@ -6,6 +6,7 @@ import { Email } from '../Email'
 import { Normalizer } from '../Normalizer'
 import { Url } from '../Url'
 import { Uuid } from '../Uuid'
+import { Warn } from '../Warn'
 import { Json } from './Json'
 import { jsonNormalizer } from './jsonNormalizer'
 
@@ -17,12 +18,7 @@ export function jsonNormalizerWithSchemaFactory<T = Json>(schema: Json.Schema): 
   })
 }
 
-function validateAgainstSchema(
-  value: Json,
-  schema: Json.Schema,
-  warn: Normalizer.Warn,
-  path: string | undefined
-): void {
+function validateAgainstSchema(value: Json, schema: Json.Schema, warn: Warn, path: string | undefined): void {
   // Handle const validation
   if ('const' in schema) {
     if (!haveSameContents(value, schema.const))
@@ -150,7 +146,7 @@ function validateAgainstSchema(
   throwError(prependMessage(path, `Unsupported schema type "${typeValue}".`))
 }
 
-function validateStringFormat(value: string, format: string, path: string | undefined, warn: Normalizer.Warn): void {
+function validateStringFormat(value: string, format: string, path: string | undefined, warn: Warn): void {
   switch (format) {
     case 'date-time': {
       const normalized = DateTime.normalizer.normalize(value)

@@ -4,6 +4,7 @@ import { prependMessage } from '../helpers/error-warning/prependMessage'
 import { arrayHelpers } from '../helpers/native/arrayHelpers'
 import { objectHelpers } from '../helpers/native/objectHelpers'
 import type { Falsy } from '../types'
+import { Warn } from './Warn'
 
 /**
  * A composable validation and transformation pipeline for parsing input values.
@@ -20,7 +21,7 @@ export class Normalizer<Value> {
 
   /** Runs the normalizer, returning a `Normalized` result with value or error. */
   normalize(value: any): Normalizer.Normalized<Value> {
-    const warn = Normalizer.Warn.create()
+    const warn = Warn.create()
     try {
       if (value === undefined) throw new Error('Undefined.')
       const parsedValue = this.parseOrThrow(value, warn)
@@ -40,7 +41,7 @@ export class Normalizer<Value> {
    * Passes `undefined` as it is, suitable to normalized optional (not nullable) values.
    */
   normalizeIfExists<V>(value: V): Normalizer.Normalized<undefined extends V ? Value | undefined : Value> {
-    const warn = Normalizer.Warn.create()
+    const warn = Warn.create()
     try {
       const parsedValue = value === undefined ? undefined : this.parseOrThrow(value, warn)
       return new Normalizer.Normalized({
@@ -281,29 +282,6 @@ export namespace Normalizer {
     warn: Warn,
     abortSignal: AbortSignal | undefined
   ) => Promise<ToValue>
-
-  /** Warning collector function passed to parsers. Call with a message to accumulate warnings. */
-  export interface Warn {
-    (message: string | Falsy): void
-    /** Accumulated warning messages joined by newlines. */
-    readonly message: string | undefined
-  }
-
-  export namespace Warn {
-    /** Creates a new warning collector. */
-    export function create(): Warn {
-      const warn: Warn & { message: string | undefined } = message => {
-        warn.message =
-          arrayHelpers
-            .distinctString(
-              arrayHelpers.filterFalsy([warn.message, message].flatMap(message => (message || '').split('\n')))
-            )
-            .join('\n') || undefined
-      }
-      warn.message = undefined
-      return warn
-    }
-  }
 
   /** Passthrough normalizer that accepts any value unchanged. */
   export const any = new Normalizer((value, warn) => value)
