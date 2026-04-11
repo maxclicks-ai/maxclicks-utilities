@@ -20,14 +20,14 @@ export class Normalizer<Value> {
   constructor(readonly parseOrThrow: Normalizer.ParseOrThrow<Value>) {}
 
   /** Runs the normalizer, returning a `Normalized` result with value or error. */
-  normalize(value: Value): Normalizer.Normalized<Value> {
+  normalize(value: Value): Normalizer.Normalized<Exclude<Value, undefined>> {
     const warn = Warn.create()
     try {
       if (value === undefined) throw new Error('Undefined.')
       const parsedValue = this.parseOrThrow(value, warn)
       return new Normalizer.Normalized({
         warningMessage: warn.message,
-        value: parsedValue as Value,
+        value: parsedValue as Exclude<Value, undefined>,
       })
     } catch (error) {
       return new Normalizer.Normalized({
@@ -86,7 +86,7 @@ export namespace Normalizer {
     constructor(readonly parseOrThrowAsync: ParseOrThrowAsync<Value>) {}
 
     /** Runs the async normalizer, returning a `Normalized` result. */
-    async normalize(value: Value, abortSignal?: AbortSignal): Promise<Normalized<Value>> {
+    async normalize(value: Value, abortSignal?: AbortSignal): Promise<Normalized<Exclude<Value, undefined>>> {
       const warn = Warn.create()
       try {
         if (abortSignal?.aborted) throw new Error('Aborted.')
@@ -95,7 +95,7 @@ export namespace Normalizer {
         if (abortSignal?.aborted) throw new Error('Aborted.')
         return new Normalized({
           warningMessage: warn.message,
-          value: parsedValue as Value,
+          value: parsedValue as Exclude<Value, undefined>,
         })
       } catch (error) {
         return new Normalized({
