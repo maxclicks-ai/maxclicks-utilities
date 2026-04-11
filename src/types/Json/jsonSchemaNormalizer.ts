@@ -146,7 +146,7 @@ export const jsonSchemaNormalizer = jsonNormalizer.chain((value, warn): Json.Sch
       throw new Error(
         `When type is "array", these properties are not supported: ${unsupportedKeys.map(k => `"${k}"`).join(', ')}.`
       )
-    jsonSchemaNormalizer.required.normalizeIfExists(items).getValue('items', warn)
+    jsonSchemaNormalizer.required.normalizeIfExists(items as any).getValue('items', warn)
     if (minItems !== undefined) {
       if (typeof minItems !== 'number') throw new Error('"minItems" must be a number.')
       if (minItems < 0) throw new Error('"minItems" cannot be negative.')
@@ -174,11 +174,11 @@ export const jsonSchemaNormalizer = jsonNormalizer.chain((value, warn): Json.Sch
       if (typeof properties !== 'object' || properties === null || Array.isArray(properties))
         throw new Error('"properties" must be an object.')
       for (const [key, propertySchema] of Object.entries(properties)) {
-        jsonSchemaNormalizer.required.normalize(propertySchema).getValue(`properties.${key}`, warn)
+        jsonSchemaNormalizer.required.normalize(propertySchema as any).getValue(`properties.${key}`, warn)
       }
     }
     if (additionalProperties !== undefined && additionalProperties !== true) {
-      jsonSchemaNormalizer.required.normalize(additionalProperties).getValue('additionalProperties', warn)
+      jsonSchemaNormalizer.required.normalize(additionalProperties as any).getValue('additionalProperties', warn)
     }
     if (required !== undefined) {
       if (!Array.isArray(required)) throw new Error('"required" must be an array.')

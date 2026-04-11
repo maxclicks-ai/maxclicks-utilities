@@ -11,7 +11,7 @@ export function normalizeObjectInline<T extends {} | null | undefined>(
     .chain((value, warn) =>
       Normalizer.Normalized.combine(normalizeProperties(value as Exclude<T, null | undefined>)).getValue(warn)
     )
-    .normalize(value) as Normalizer.Normalized<T>
+    .normalize(value as any) as Normalizer.Normalized<T>
 }
 
 export namespace normalizeObjectInline {
@@ -28,6 +28,6 @@ export namespace normalizeObjectInline {
       .chainAsync(async (value, warn) =>
         Normalizer.Normalized.combine(await normalizeProperties(value as Exclude<T, null | undefined>)).getValue(warn)
       )
-      .normalize(value)) as Normalizer.Normalized<T>
+      .normalize(value as any)) as Normalizer.Normalized<T>
   }
 }

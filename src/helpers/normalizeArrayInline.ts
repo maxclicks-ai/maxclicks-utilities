@@ -17,7 +17,7 @@ export function normalizeArrayInline<T extends readonly any[] | null | undefined
         )
       ).getValue(warn)
     )
-    .normalize(value) as Normalizer.Normalized<any>
+    .normalize(value as any) as Normalizer.Normalized<any>
 }
 
 export namespace normalizeArrayInline {
@@ -47,6 +47,6 @@ export namespace normalizeArrayInline {
           )
         ).getValue(warn)
       )
-      .normalize(value)) as Normalizer.Normalized<any>
+      .normalize(value as any)) as Normalizer.Normalized<any>
   }
 }
