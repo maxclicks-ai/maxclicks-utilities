@@ -3,7 +3,7 @@ import { getErrorMessage } from '../helpers/error-warning/getErrorMessage'
 import { prependMessage } from '../helpers/error-warning/prependMessage'
 import { arrayHelpers } from '../helpers/native/arrayHelpers'
 import { objectHelpers } from '../helpers/native/objectHelpers'
-import type { Falsy } from '../types'
+import type { DeepReadonly, Falsy } from '../types'
 import { Warn } from './Warn'
 
 /**
@@ -20,14 +20,14 @@ export class Normalizer<Value> {
   constructor(readonly parseOrThrow: Normalizer.ParseOrThrow<Value>) {}
 
   /** Runs the normalizer, returning a `Normalized` result with value or error. */
-  normalize(value: Value): Normalizer.Normalized<Exclude<Value, undefined>> {
+  normalize<V extends DeepReadonly<Value>>(value: V): Normalizer.Normalized<Exclude<V, undefined>> {
     const warn = Warn.create()
     try {
       if (value === undefined) throw new Error('Undefined.')
       const parsedValue = this.parseOrThrow(value, warn)
       return new Normalizer.Normalized({
         warningMessage: warn.message,
-        value: parsedValue as Exclude<Value, undefined>,
+        value: parsedValue as Exclude<V, undefined>,
       })
     } catch (error) {
       return new Normalizer.Normalized({
@@ -40,7 +40,7 @@ export class Normalizer<Value> {
    * Runs the normalizer, returning a `Normalized` result with value or error.
    * Passes `undefined` as it is, suitable to normalized optional (not nullable) values.
    */
-  normalizeIfExists<V extends Value | undefined>(value: V): Normalizer.Normalized<V> {
+  normalizeIfExists<V extends DeepReadonly<Value> | undefined>(value: V): Normalizer.Normalized<V> {
     const warn = Warn.create()
     try {
       const parsedValue = value === undefined ? undefined : this.parseOrThrow(value, warn)
@@ -86,7 +86,10 @@ export namespace Normalizer {
     constructor(readonly parseOrThrowAsync: ParseOrThrowAsync<Value>) {}
 
     /** Runs the async normalizer, returning a `Normalized` result. */
-    async normalize(value: Value, abortSignal?: AbortSignal): Promise<Normalized<Exclude<Value, undefined>>> {
+    async normalize<V extends DeepReadonly<Value>>(
+      value: V,
+      abortSignal?: AbortSignal
+    ): Promise<Normalized<Exclude<V, undefined>>> {
       const warn = Warn.create()
       try {
         if (abortSignal?.aborted) throw new Error('Aborted.')
@@ -95,7 +98,7 @@ export namespace Normalizer {
         if (abortSignal?.aborted) throw new Error('Aborted.')
         return new Normalized({
           warningMessage: warn.message,
-          value: parsedValue as Exclude<Value, undefined>,
+          value: parsedValue as Exclude<V, undefined>,
         })
       } catch (error) {
         return new Normalized({
@@ -108,7 +111,10 @@ export namespace Normalizer {
      * Runs the async normalizer, returning a `Normalized` result with value or error.
      * Passes `undefined` as it is, suitable to normalized optional (not nullable) values.
      */
-    async normalizeIfExists<V extends Value | undefined>(value: V, abortSignal?: AbortSignal): Promise<Normalized<V>> {
+    async normalizeIfExists<V extends DeepReadonly<Value> | undefined>(
+      value: V,
+      abortSignal?: AbortSignal
+    ): Promise<Normalized<V>> {
       const warn = Warn.create()
       try {
         if (abortSignal?.aborted) throw new Error('Aborted.')
