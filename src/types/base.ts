@@ -79,6 +79,10 @@ export type Extender<U> = <T extends U>(value: T) => T
  */
 export type WithStringIndexSignature<T> = { [Key in keyof T]: T[Key] }
 
+export type IfAny<V, Then, Else> = 0 extends 1 & V ? Then : Else
+export type IfNever<V, Then, Else> = [V] extends [never] ? Then : Else
+export type IfUnknown<V, Then, Else> = unknown extends V ? Then : Else
+
 /** Values that are falsy in JavaScript. */
 export type Falsy = false | '' | 0 | null | undefined | void
 
