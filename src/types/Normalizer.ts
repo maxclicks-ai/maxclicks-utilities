@@ -3,7 +3,7 @@ import { getErrorMessage } from '../helpers/error-warning/getErrorMessage'
 import { prependMessage } from '../helpers/error-warning/prependMessage'
 import { arrayHelpers } from '../helpers/native/arrayHelpers'
 import { objectHelpers } from '../helpers/native/objectHelpers'
-import type { DeepReadonly, Falsy } from '../types'
+import type { DeepReadonly, Falsy } from '../types/base'
 import { Warn } from './Warn'
 
 /**

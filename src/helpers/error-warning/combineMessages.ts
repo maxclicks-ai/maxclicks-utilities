@@ -1,4 +1,4 @@
-import { Falsy } from '../../types'
+import { Falsy } from '../../types/base'
 import { arrayHelpers } from '../native/arrayHelpers'
 import { objectHelpers } from '../native/objectHelpers'
 import { prependMessage } from './prependMessage'

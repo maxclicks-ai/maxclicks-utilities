@@ -1,5 +1,5 @@
 import { arrayHelpers } from '../helpers/native/arrayHelpers'
-import { Falsy } from '../types'
+import { Falsy } from '../types/base'
 
 /** Warning collector function. Call with a message to accumulate warnings. */
 export interface Warn {

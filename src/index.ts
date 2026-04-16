@@ -30,7 +30,7 @@ export * from './modules/common-normalizers/labelNormalizer'
 export * from './modules/common-normalizers/nameNormalizer'
 export * from './modules/common-normalizers/widthHeightNormalizer'
 
-export * from './types'
+export * from './types/base'
 
 export * from './types/Address'
 export * from './types/Color'

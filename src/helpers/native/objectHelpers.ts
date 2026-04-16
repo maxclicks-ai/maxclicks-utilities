@@ -1,4 +1,4 @@
-import { DeepWritable } from '../../types'
+import { DeepWritable } from '../../types/base'
 
 interface ObjectHelpers {
   /** Object.keys reduces key type to string. */

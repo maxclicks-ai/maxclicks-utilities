@@ -1,4 +1,4 @@
-import { DeepWritable } from '../types'
+import { DeepWritable } from '../types/base'
 import { Json } from '../types/Json'
 
 /** Creates a deep copy of a JSON value, removing readonly modifiers from the type. */

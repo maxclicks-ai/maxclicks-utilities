@@ -1,4 +1,4 @@
-import { Falsy } from '../../types'
+import { Falsy } from '../../types/base'
 
 /**
  * Executes an action, allowing error transformation if it throws.
