@@ -230,7 +230,7 @@ export namespace Normalizer {
       normalizedItems: T,
       labelByKey?: { readonly [K in keyof T]?: string | Falsy }
     ): Normalized<{ -readonly [K in keyof T]: T[K] extends Normalized<infer V> ? V : T[K] }> {
-      const normalizedItemsByKey = (
+      const normalizedItemsWithRedefinedKeys = (
         Array.isArray(normalizedItems)
           ? arrayHelpers.toDictionary(
               normalizedItems,
@@ -243,10 +243,18 @@ export namespace Normalizer {
             )
       ) as { readonly [K in string]: Normalized<any> }
 
-      const errorMessage = combineMessages.errors(normalizedItemsByKey)
+      const errorMessage = combineMessages(
+        objectHelpers.map(normalizedItemsWithRedefinedKeys, (key, value) =>
+          value instanceof Normalized ? value.errorMessage : undefined
+        )
+      )
       if (errorMessage) return new Normalized({ errorMessage })
 
-      const warningMessage = combineMessages.warnings(normalizedItemsByKey)
+      const warningMessage = combineMessages(
+        objectHelpers.map(normalizedItemsWithRedefinedKeys, (key, value) =>
+          value instanceof Normalized ? value.warningMessage : undefined
+        )
+      )
       const value = Array.isArray(normalizedItems)
         ? (normalizedItems as readonly Normalized<any>[]).map(item => (item instanceof Normalized ? item.value : item))
         : objectHelpers.onlyExisting(

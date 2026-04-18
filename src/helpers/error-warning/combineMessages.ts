@@ -14,27 +14,3 @@ export function combineMessages(messagesByKey: { readonly [key: string]: string 
       .join('\n') || undefined
   )
 }
-
-export namespace combineMessages {
-  /** Combines `errorMessage` properties from normalized results. */
-  export function errors(normalizedByKey: {
-    readonly [key: string]: string | Falsy | { readonly errorMessage?: string | Falsy }
-  }): string | undefined {
-    return combineMessages(
-      objectHelpers.map(normalizedByKey, (key, value) =>
-        !value ? undefined : typeof value === 'string' ? value : value.errorMessage
-      )
-    )
-  }
-
-  /** Combines `warningMessage` properties from normalized results. */
-  export function warnings(normalizedByKey: {
-    readonly [key: string]: string | Falsy | { readonly warningMessage?: string | Falsy }
-  }): string | undefined {
-    return combineMessages(
-      objectHelpers.map(normalizedByKey, (key, value) =>
-        !value ? undefined : typeof value === 'string' ? value : value.warningMessage
-      )
-    )
-  }
-}
