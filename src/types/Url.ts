@@ -18,7 +18,7 @@ export namespace Url {
 
   export const jsonSchema: Json.Schema = {
     type: 'string',
-    format: 'uri',
     description: 'A URL string (href).',
+    format: 'uri',
   }
 }

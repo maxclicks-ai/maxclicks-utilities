@@ -16,6 +16,7 @@ export namespace Phone {
   export const jsonSchema: Json.Schema = {
     type: 'string',
     description: 'A phone number string with optional leading `+`.',
+    format: 'phone',
   }
 }
 

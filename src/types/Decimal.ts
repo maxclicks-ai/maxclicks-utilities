@@ -21,6 +21,7 @@ export namespace Decimal {
     type: 'string',
     description:
       'String representation for decimal numbers with up to 15 integer and 5 fractional digits, with support for negative values.',
+    format: 'decimal',
   }
 }
 

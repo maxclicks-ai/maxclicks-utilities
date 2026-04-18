@@ -27,6 +27,7 @@ export namespace TimeOnly {
   export const jsonSchema: Json.Schema = {
     type: 'string',
     description: 'ISO formatted time string: `HH:mm:ss.sss`',
+    format: 'time',
   }
 }
 
