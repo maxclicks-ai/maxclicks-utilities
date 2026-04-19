@@ -1,6 +1,5 @@
 export * from './primitiveById'
 export * from './PrimitiveId'
-export * from './primitives'
 
 export * from './definitions/Address'
 export * from './definitions/Color'
