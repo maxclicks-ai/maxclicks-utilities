@@ -1,5 +1,6 @@
-import { Json } from './Json'
-import { Normalizer } from './Normalizer'
+import { Json } from '../../../types/Json'
+import { Normalizer } from '../../../types/Normalizer'
+import { PrimitiveId } from '../PrimitiveId'
 
 /** Structured postal address with optional geolocation. */
 export interface Address {
@@ -15,6 +16,10 @@ export interface Address {
 }
 
 export namespace Address {
+  export const id = 'address'
+
+  export const name = 'Address'
+
   export const normalizer = Normalizer.object
     .chain(Normalizer.objectRequireKeys('lines', 'city', 'country'))
     .chain((value, warn): Address | null => {
@@ -65,4 +70,28 @@ export namespace Address {
     },
     required: ['lines', 'city', 'country'],
   }
+
+  export const typeScript: string = `/** A physical mailing address. */
+interface Address {
+  /** Line one (required): Street address, P.O. box, company name, c/o. Line two: Apartment, suite, unit, building, floor, etc. Line three: Additional address information, if needed. */
+  lines: string[]
+  /** City, town, village, or locality. */
+  city: string
+  /** State, province, or region. */
+  state?: string
+  /** Postal or ZIP code. */
+  postalCode?: string
+  /** Country name or code. */
+  country: string
+  /** Full formatted address as a single string with line breaks. */
+  formatted?: string
+  /** Latitude in decimal degrees (-90 to 90). */
+  latitude?: number
+  /** Longitude in decimal degrees (-180 to 180). */
+  longitude?: number
+  /** IANA Time Zone Database name, e.g., "America/New_York". */
+  timezone?: string
+}`
+
+  export const dependencies: readonly PrimitiveId[] = []
 }

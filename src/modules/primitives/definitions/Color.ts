@@ -1,10 +1,15 @@
-import { Json } from './Json'
-import { Normalizer } from './Normalizer'
+import { Json } from '../../../types/Json'
+import { Normalizer } from '../../../types/Normalizer'
+import { PrimitiveId } from '../PrimitiveId'
 
 /** A string representing a color, typically in hexadecimal format. */
 export type Color = string
 
 export namespace Color {
+  export const id = 'color'
+
+  export const name = 'Color'
+
   export const normalizer = Normalizer.stringTrimmedAndLowerCased.chain((value, warn) => {
     if (!value) return null
     if (value.startsWith('#')) {
@@ -25,4 +30,9 @@ export namespace Color {
     type: 'string',
     description: 'A string representing a color, typically in hexadecimal format.',
   }
+
+  export const typeScript: string = `/** A string representing a color, typically in hexadecimal format. */
+type Color = string`
+
+  export const dependencies: readonly PrimitiveId[] = []
 }

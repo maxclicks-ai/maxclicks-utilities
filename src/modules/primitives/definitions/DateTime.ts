@@ -1,10 +1,15 @@
-import { Json } from './Json'
-import { Normalizer } from './Normalizer'
+import { Json } from '../../../types/Json'
+import { Normalizer } from '../../../types/Normalizer'
+import { PrimitiveId } from '../PrimitiveId'
 
-/** ISO formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ` */
+/** ISO 8601 formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ` */
 export type DateTime = string
 
 export namespace DateTime {
+  export const id = 'date time'
+
+  export const name = 'DateTime'
+
   export const normalizer = new Normalizer((value, warn) => {
     if (value === null) return null
 
@@ -23,6 +28,11 @@ export namespace DateTime {
   export const jsonSchema: Json.Schema = {
     type: 'string',
     format: 'date-time',
-    description: 'ISO formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ`',
+    description: 'ISO 8601 formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ`',
   }
+
+  export const typeScript: string = `/** ISO 8601 formatted string: \`YYYY-MM-DDTHH:mm:ss.sssZ\` */
+type DateTime = string`
+
+  export const dependencies: readonly PrimitiveId[] = []
 }

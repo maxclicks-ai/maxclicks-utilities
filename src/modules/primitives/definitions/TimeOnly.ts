@@ -1,10 +1,15 @@
-import { Json } from './Json'
-import { Normalizer } from './Normalizer'
+import { Json } from '../../../types/Json'
+import { Normalizer } from '../../../types/Normalizer'
+import { PrimitiveId } from '../PrimitiveId'
 
-/** ISO formatted time string: `HH:mm:ss.sss` */
+/** ISO 8601 formatted time string: `HH:mm:ss.sss` */
 export type TimeOnly = string
 
 export namespace TimeOnly {
+  export const id = 'time only'
+
+  export const name = 'TimeOnly'
+
   export const normalizer = new Normalizer((value, warn) => {
     if (value === null) return null
 
@@ -26,9 +31,14 @@ export namespace TimeOnly {
 
   export const jsonSchema: Json.Schema = {
     type: 'string',
-    description: 'ISO formatted time string: `HH:mm:ss.sss`',
+    description: 'ISO 8601 formatted time string: `HH:mm:ss.sss`',
     format: 'time',
   }
+
+  export const typeScript: string = `/** ISO 8601 formatted time string: \`HH:mm:ss.sss\` */
+type TimeOnly = string`
+
+  export const dependencies: readonly PrimitiveId[] = []
 }
 
 const REGEX = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,3})$/

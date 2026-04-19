@@ -1,10 +1,15 @@
-import { Json } from './Json'
-import { Normalizer } from './Normalizer'
+import { Json } from '../../../types/Json'
+import { Normalizer } from '../../../types/Normalizer'
+import { PrimitiveId } from '../PrimitiveId'
 
 /** A URL-friendly string consisting of lowercase letters, numbers, and dash (-) characters. */
 export type Slug = string
 
 export namespace Slug {
+  export const id = 'slug'
+
+  export const name = 'Slug'
+
   export const normalizer = Normalizer.stringTrimmedAndLowerCased.chain((value, warn) => {
     if (!value) return null
     if (value.includes(' ')) throw new Error('No spaces are allowed.')
@@ -17,6 +22,11 @@ export namespace Slug {
     type: 'string',
     description: 'A URL-friendly string consisting of lowercase letters, numbers, and dash (-) characters.',
   }
+
+  export const typeScript: string = `/** A URL-friendly string consisting of lowercase letters, numbers, and dash (-) characters. */
+type Slug = string`
+
+  export const dependencies: readonly PrimitiveId[] = []
 }
 
 const REGEX = /[^a-z0-9-]/

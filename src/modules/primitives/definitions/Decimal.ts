@@ -1,10 +1,15 @@
-import { Json } from './Json'
-import { Normalizer } from './Normalizer'
+import { Json } from '../../../types/Json'
+import { Normalizer } from '../../../types/Normalizer'
+import { PrimitiveId } from '../PrimitiveId'
 
 /** String representation for decimal numbers with up to 15 integer and 5 fractional digits, with support for negative values. */
 export type Decimal = string
 
 export namespace Decimal {
+  export const id = 'decimal'
+
+  export const name = 'Decimal'
+
   export const normalizer = Normalizer.stringTrimmed.chain((value, warn) => {
     if (value === null) return null
     if (!CHECK_REGEX.test(value)) throw new Error('Invalid decimal format.')
@@ -23,6 +28,11 @@ export namespace Decimal {
       'String representation for decimal numbers with up to 15 integer and 5 fractional digits, with support for negative values.',
     format: 'decimal',
   }
+
+  export const typeScript: string = `/** String representation for decimal numbers with up to 15 integer and 5 fractional digits, with support for negative values. */
+type Decimal = string`
+
+  export const dependencies: readonly PrimitiveId[] = []
 }
 
 const CHECK_REGEX = /^-?\d+(\.\d+)?$/

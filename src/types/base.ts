@@ -56,7 +56,7 @@ export type DeepPartial<T> = T extends BuiltIns
 export type WithType<U extends { readonly type?: any }, T extends U['type']> = U & { readonly type: T }
 
 /**
- * Works together with the `typed()` helper function to help define objects with
+ * Works along with the `typed()` helper function to help define objects with
  * specific types that _extend_ some other type.
  *
  * @example
