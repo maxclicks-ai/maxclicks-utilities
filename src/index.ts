@@ -8,6 +8,8 @@ export * from './helpers/native/arrayHelpers'
 export * from './helpers/native/objectHelpers'
 export * from './helpers/native/stringHelpers'
 
+export * from './helpers/assertNoDefinedKeys'
+export * from './helpers/assertNotAbortedSignal'
 export * from './helpers/deepClone'
 export * from './helpers/delay'
 export * from './helpers/escapeForRegExp'
@@ -34,6 +36,7 @@ export * from './modules/primitives'
 
 export * from './types/base'
 
+export * from './types/AbortError'
 export * from './types/Json'
 export * from './types/Lazily'
 export * from './types/Normalizer'
