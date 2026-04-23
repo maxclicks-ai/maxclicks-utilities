@@ -13,12 +13,6 @@ export { delay }
  *
  * @param abortHandling - `'resolve'` returns `'aborted'`, `'reject'` throws an error.
  */
-async function delay(milliseconds?: number): Promise<void>
-async function delay(
-  milliseconds: number,
-  abortSignal: AbortSignal,
-  abortHandling?: 'resolve' | 'reject'
-): Promise<void | 'aborted'>
 async function delay(
   milliseconds = 0,
   abortSignal?: AbortSignal,
