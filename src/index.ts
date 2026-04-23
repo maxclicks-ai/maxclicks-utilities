@@ -1,8 +1,8 @@
-export * from './helpers/error-warning/alterError'
 export * from './helpers/error-warning/combineMessages'
 export * from './helpers/error-warning/getErrorMessage'
 export * from './helpers/error-warning/prependMessage'
 export * from './helpers/error-warning/throwError'
+export * from './helpers/error-warning/transformError'
 
 export * from './helpers/native/arrayHelpers'
 export * from './helpers/native/objectHelpers'

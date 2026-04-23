@@ -5,7 +5,7 @@ import { Falsy } from '../../types/base'
  *
  * @param handleError - Returns a new error message/Error to throw, or falsy to rethrow original.
  */
-export function alterError<R>(action: () => R, handleError: (error: unknown) => string | Error | Falsy): R {
+export function transformError<R>(action: () => R, handleError: (error: unknown) => string | Error | Falsy): R {
   try {
     return action()
   } catch (error) {
@@ -16,8 +16,8 @@ export function alterError<R>(action: () => R, handleError: (error: unknown) => 
   }
 }
 
-export namespace alterError {
-  /** Async variant of `alterError`. */
+export namespace transformError {
+  /** Async variant of `transformError`. */
   export async function async<R>(
     action: () => R,
     handleError: (error: unknown) => string | Error | Falsy

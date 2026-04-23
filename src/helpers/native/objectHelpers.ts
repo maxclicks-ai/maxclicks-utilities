@@ -1,5 +1,3 @@
-import { DeepWritable } from '../../types/base'
-
 interface ObjectHelpers {
   /** Object.keys reduces key type to string. */
   keys<T>(object: T): (keyof T)[]
@@ -22,16 +20,23 @@ interface ObjectHelpers {
   mergeInto<E, T>(
     extension: E,
     objectFactory: (extension: E) => T
-  ): Omit<T, keyof E> &
-    (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
+  ): (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
+    (T extends readonly any[]
+      ? T
+      : T extends Readonly<Record<string, any>>
+        ? { [K in Exclude<keyof T, keyof E>]: T[K] }
+        : T) &
     E
   extendBy<T, E>(
     object: T,
     extensionFactory: (object: T) => E
-  ): Omit<T, keyof E> &
-    (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
+  ): (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
+    (T extends readonly any[]
+      ? T
+      : T extends Readonly<Record<string, any>>
+        ? { [K in Exclude<keyof T, keyof E>]: T[K] }
+        : T) &
     E
-  modify<T>(object: T, modifier: (object: DeepWritable<T>) => void | T): T
 }
 
 const integerRegex = /^[0-9]+$/
@@ -109,10 +114,5 @@ export const objectHelpers: ObjectHelpers = {
   },
   extendBy(object: any, extensionFactory: (object: any) => any): any {
     return Object.assign(object, extensionFactory(object))
-  },
-  modify(object: any, modifier: (object: any) => any): any {
-    let modifiedObject = { ...object }
-    modifiedObject = modifier(modifiedObject) ?? modifiedObject
-    return modifiedObject
   },
 }
