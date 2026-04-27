@@ -5,7 +5,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** A URL string (href). */
-export type Url = string
+export type Url = string & {}
 
 export namespace Url {
   export const id = 'url'

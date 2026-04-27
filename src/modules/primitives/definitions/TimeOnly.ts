@@ -3,7 +3,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** ISO 8601 formatted time string: `HH:mm:ss.sss` */
-export type TimeOnly = string
+export type TimeOnly = string & {}
 
 export namespace TimeOnly {
   export const id = 'time only'

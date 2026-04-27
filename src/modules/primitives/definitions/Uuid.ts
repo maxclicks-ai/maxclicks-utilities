@@ -3,7 +3,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** A UUID string. */
-export type Uuid = string
+export type Uuid = string & {}
 
 export namespace Uuid {
   export const id = 'uuid'

@@ -3,7 +3,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** A URL-friendly string consisting of lowercase letters, numbers, and dash (-) characters. */
-export type Slug = string
+export type Slug = string & {}
 
 export namespace Slug {
   export const id = 'slug'

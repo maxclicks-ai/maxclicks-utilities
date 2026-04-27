@@ -3,7 +3,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** ISO 8601 formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ` */
-export type DateTime = string
+export type DateTime = string & {}
 
 export namespace DateTime {
   export const id = 'date time'

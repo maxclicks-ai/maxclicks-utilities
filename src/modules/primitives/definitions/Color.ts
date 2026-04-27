@@ -3,7 +3,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** A string representing a color, typically in hexadecimal format. */
-export type Color = string
+export type Color = string & {}
 
 export namespace Color {
   export const id = 'color'

@@ -3,7 +3,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** A phone number string with optional leading `+`. */
-export type Phone = string
+export type Phone = string & {}
 
 export namespace Phone {
   export const id = 'phone'

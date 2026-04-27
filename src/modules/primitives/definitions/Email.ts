@@ -3,7 +3,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** A lowercase email address string. */
-export type Email = string
+export type Email = string & {}
 
 export namespace Email {
   export const id = 'email'

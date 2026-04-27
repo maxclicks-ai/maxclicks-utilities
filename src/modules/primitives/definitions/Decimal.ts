@@ -3,7 +3,7 @@ import { Normalizer } from '../../../types/Normalizer'
 import { PrimitiveId } from '../PrimitiveId'
 
 /** String representation for decimal numbers with up to 15 integer and 5 fractional digits, with support for negative values. */
-export type Decimal = string
+export type Decimal = string & {}
 
 export namespace Decimal {
   export const id = 'decimal'
