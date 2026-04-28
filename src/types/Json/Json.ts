@@ -3,6 +3,7 @@ import { getErrorMessage } from '../../helpers/error-warning/getErrorMessage'
 import { jsonNormalizer } from './jsonNormalizer'
 import { jsonNormalizerWithSchemaFactory } from './jsonNormalizerWithSchemaFactory'
 import { jsonSchemaNormalizer } from './jsonSchemaNormalizer'
+import { jsonSchemaNullable } from './jsonSchemaNullable'
 import { jsonSchemaSatisfies } from './jsonSchemaSatisfies'
 
 // For more details about JSON schema, see: https://json-schema.org/draft/2020-12
@@ -135,5 +136,8 @@ export namespace Json {
 
     /** Checks if one schema satisfies (is compatible with) another. */
     export const satisfies = jsonSchemaSatisfies
+
+    /** Returns the nullable version of the given JSON Schema. */
+    export const nullable = jsonSchemaNullable
   }
 }
