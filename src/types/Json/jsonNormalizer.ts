@@ -6,6 +6,8 @@ export const jsonNormalizer = new Normalizer((value, warn): Json => {
   return value
 })
 
+export namespace jsonNormalizer {}
+
 function isJson(value: any): boolean {
   return isJsonLeafValue(value) || isJsonArray(value) || isJsonObject(value)
 }

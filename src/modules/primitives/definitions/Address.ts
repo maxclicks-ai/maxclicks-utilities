@@ -25,7 +25,7 @@ export namespace Address {
     .chain((value, warn): Address | null => {
       if (!value) return null
       return Normalizer.Normalized.combine({
-        lines: Normalizer.array
+        lines: Normalizer.array.required
           .chain((value, warn): string[] => {
             if (value.length === 0) throw new Error('At least one address line is required.')
             if (value.length > 3) throw new Error('At most three address lines are allowed.')

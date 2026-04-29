@@ -440,12 +440,16 @@ export namespace Normalizer {
 
   /** Normalizer that wraps non-array values in an array. Returns empty array for null. */
   export const array = new Normalizer((value, warn) => {
-    if (value === null) return []
-    return (arrayHelpers.isArray(value) ? value : [value]) as any[]
+    if (value === null) return null
+    if (!arrayHelpers.isArray(value)) throw new Error('Expected an array.')
+    return value as any[]
   })
 
   /** Simplifies normalization of array items with a stronger type guarantee. */
-  export function arrayItems<I>(itemNormalizer: Normalizer<I>): Normalizer.ParseOrThrow<I[], any[]> {
-    return (value, warn) => Normalized.combine(value.map(item => itemNormalizer.normalize(item))).getValue(warn)
+  export function arrayItems<I>(itemNormalizer: Normalizer<I>): Normalizer.ParseOrThrow<I[] | null, any[] | null> {
+    return (value, warn) => {
+      if (!value) return null
+      return Normalized.combine(value.map(item => itemNormalizer.normalize(item))).getValue(warn)
+    }
   }
 }

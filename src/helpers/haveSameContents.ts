@@ -31,8 +31,10 @@ export function haveSameContents(first: any, second: any): boolean {
         !!second &&
         typeof second === 'object' &&
         !arrayHelpers.isArray(second) &&
-        objectHelpers.entries(first).every(([key, value]) => key in second && haveSameContents(value, second[key])) &&
-        objectHelpers.keys(second).every(key => key in first)
+        objectHelpers
+          .entries(first)
+          .every(([key, value]) => value === undefined || (key in second && haveSameContents(value, second[key]))) &&
+        objectHelpers.entries(second).every(([key, value]) => value === undefined || key in first)
       )
   }
 }
