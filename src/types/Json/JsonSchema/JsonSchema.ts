@@ -170,7 +170,7 @@ export namespace JsonSchema {
     readonly type: 'object' | readonly ['object', 'null']
     readonly properties?: Readonly<Record<string, JsonSchema>>
     readonly required?: readonly string[]
-    readonly additionalProperties?: JsonSchema | true
+    readonly additionalProperties?: JsonSchema | boolean
   }
 
   export namespace Object {

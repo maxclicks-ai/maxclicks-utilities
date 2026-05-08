@@ -196,6 +196,8 @@ function normalize(value: Json, jsonSchema: JsonSchema, warn: Warn, path: string
           return normalize(value, jsonSchemaProperties[key], warn, itemPath)
         if (jsonSchema.additionalProperties === true) return value
         if (jsonSchema.additionalProperties === undefined) return value
+        if (jsonSchema.additionalProperties === false)
+          throw new Error(prependMessage(itemPath, `Additional property "${key}" is not allowed.`))
         return normalize(value, jsonSchema.additionalProperties, warn, itemPath)
       }
     )

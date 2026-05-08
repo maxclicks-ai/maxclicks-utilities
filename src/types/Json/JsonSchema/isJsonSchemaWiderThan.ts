@@ -131,8 +131,13 @@ function schemaAcceptsValue(jsonSchema: JsonSchema, value: Json): boolean {
     }
     const additional = resolveAdditionalProperties(jsonSchema)
     for (const [key, propertyValue] of Object.entries(objectValue)) {
-      const propertySchema = jsonSchema.properties?.[key] ?? additional
-      if (!schemaAcceptsValue(propertySchema, propertyValue)) return false
+      const propertySchema = jsonSchema.properties?.[key]
+      if (propertySchema !== undefined) {
+        if (!schemaAcceptsValue(propertySchema, propertyValue)) return false
+      } else {
+        if (additional === false) return false
+        if (!schemaAcceptsValue(additional as JsonSchema, propertyValue)) return false
+      }
     }
     return true
   }
@@ -240,9 +245,10 @@ function isArrayWiderThan(wider: JsonSchema.Array, narrower: JsonSchema.Array): 
   return true
 }
 
-function resolveAdditionalProperties(jsonSchema: JsonSchema.Object): JsonSchema {
+function resolveAdditionalProperties(jsonSchema: JsonSchema.Object): JsonSchema | false {
   const additional = jsonSchema.additionalProperties
   if (additional === undefined || additional === true) return ANY_SCHEMA
+  if (additional === false) return false
   return additional
 }
 
@@ -262,13 +268,28 @@ function isObjectWiderThan(wider: JsonSchema.Object, narrower: JsonSchema.Object
   // For every key explicitly named in either schema, the per-key value schemas must be compatible.
   const namedKeys = new Set([...Object.keys(wider.properties ?? {}), ...Object.keys(narrower.properties ?? {})])
   for (const key of namedKeys) {
-    const widerProperty = wider.properties?.[key] ?? widerAdditional
-    const narrowerProperty = narrower.properties?.[key] ?? narrowerAdditional
-    if (!isJsonSchemaWiderThan(widerProperty, narrowerProperty)) return false
+    const widerProperty = wider.properties?.[key]
+    const narrowerProperty = narrower.properties?.[key]
+    if (widerProperty !== undefined && narrowerProperty !== undefined) {
+      if (!isJsonSchemaWiderThan(widerProperty, narrowerProperty)) return false
+    } else if (widerProperty === undefined && narrowerProperty !== undefined) {
+      // narrower has property, wider does not, so wider uses additionalProperties
+      if (widerAdditional === false) return false
+      if (!isJsonSchemaWiderThan(widerAdditional as JsonSchema, narrowerProperty)) return false
+    } else if (widerProperty !== undefined && narrowerProperty === undefined) {
+      // wider has property, narrower does not, so narrower uses additionalProperties
+      if (narrowerAdditional === false) return false
+      if (!isJsonSchemaWiderThan(widerProperty, narrowerAdditional as JsonSchema)) return false
+    }
   }
 
   // For arbitrary keys named in neither schema, `additionalProperties` governs both sides.
-  if (!isJsonSchemaWiderThan(widerAdditional, narrowerAdditional)) return false
+  if (narrowerAdditional === false) {
+    if (widerAdditional !== false) return false
+  } else if (typeof narrowerAdditional === 'object') {
+    if (widerAdditional === false) return false
+    if (!isJsonSchemaWiderThan(widerAdditional as JsonSchema, narrowerAdditional)) return false
+  }
 
   return true
 }

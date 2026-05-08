@@ -140,6 +140,8 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
         jsonSchemaNormalizer.required.normalize(value)
       )
     )
+    if (objectSchema.additionalProperties === false)
+      warn('We recommend "additionalProperties" not to be false for maximum schema expandability in the future.')
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
       type: objectSchema.type === 'object' ? 'object' : ['object', 'null'],
@@ -156,8 +158,8 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
               .normalize(item)
           ),
       additionalProperties:
-        objectSchema.additionalProperties === true
-          ? true
+        typeof objectSchema.additionalProperties === 'boolean'
+          ? objectSchema.additionalProperties
           : jsonSchemaNormalizer.required.normalizeIfExists(objectSchema.additionalProperties),
     } satisfies Normalizer.Normalized.Items<JsonSchema.Object>).getValue(warn) as JsonSchema.Object
   }
