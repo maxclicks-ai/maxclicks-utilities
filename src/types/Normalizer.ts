@@ -22,14 +22,20 @@ export class Normalizer<Value> {
   /** Runs the normalizer, returning a `Normalized` result with value or error. */
   normalize<V>(
     value: V
-  ): Normalizer.Normalized<Exclude<IfAny<V, Value, V extends DeepReadonly<Value> ? V : Value>, undefined>> {
+  ): Normalizer.Normalized<
+    IfAny<
+      V,
+      Value,
+      Exclude<V, null> extends DeepReadonly<Value> ? (null extends Value ? V | null : Exclude<V, null>) : Value
+    >
+  > {
     const warn = Warn.create()
     try {
       if (value === undefined) throw new Error('Undefined.')
       const parsedValue = this.parseOrThrow(value, warn)
       return new Normalizer.Normalized({
         warningMessage: warn.accumulatedMessage,
-        value: parsedValue as Exclude<IfAny<V, Value, V extends DeepReadonly<Value> ? V : Value>, undefined>,
+        value: parsedValue as any,
       })
     } catch (error) {
       return new Normalizer.Normalized({
@@ -45,18 +51,20 @@ export class Normalizer<Value> {
   normalizeIfExists<V>(
     value: V
   ): Normalizer.Normalized<
-    IfAny<V, Value | undefined, V extends DeepReadonly<Value> | undefined ? V : Value | undefined>
+    IfAny<
+      V,
+      Value | undefined,
+      Exclude<V, null | undefined> extends DeepReadonly<Value>
+        ? (null extends Value ? V | null : Exclude<V, null>) | (undefined extends V ? undefined : never)
+        : Value | undefined
+    >
   > {
     const warn = Warn.create()
     try {
       const parsedValue = value === undefined ? undefined : this.parseOrThrow(value, warn)
       return new Normalizer.Normalized({
         warningMessage: warn.accumulatedMessage,
-        value: parsedValue as IfAny<
-          V,
-          Value | undefined,
-          V extends DeepReadonly<Value> | undefined ? V : Value | undefined
-        >,
+        value: parsedValue as any,
       })
     } catch (error) {
       return new Normalizer.Normalized({
@@ -99,7 +107,15 @@ export namespace Normalizer {
     async normalize<V>(
       value: V,
       abortSignal?: AbortSignal
-    ): Promise<Normalized<Exclude<IfAny<V, Value, V extends DeepReadonly<Value> ? V : Value>, undefined>>> {
+    ): Promise<
+      Normalized<
+        IfAny<
+          V,
+          Value,
+          Exclude<V, null> extends DeepReadonly<Value> ? (null extends Value ? V | null : Exclude<V, null>) : Value
+        >
+      >
+    > {
       const warn = Warn.create()
       try {
         if (abortSignal?.aborted) throw new Error('Aborted.')
@@ -108,7 +124,7 @@ export namespace Normalizer {
         if (abortSignal?.aborted) throw new Error('Aborted.')
         return new Normalized({
           warningMessage: warn.accumulatedMessage,
-          value: parsedValue as Exclude<IfAny<V, Value, V extends DeepReadonly<Value> ? V : Value>, undefined>,
+          value: parsedValue as any,
         })
       } catch (error) {
         return new Normalized({
@@ -125,7 +141,15 @@ export namespace Normalizer {
       value: V,
       abortSignal?: AbortSignal
     ): Promise<
-      Normalized<IfAny<V, Value | undefined, V extends DeepReadonly<Value> | undefined ? V : Value | undefined>>
+      Normalized<
+        IfAny<
+          V,
+          Value | undefined,
+          Exclude<V, null | undefined> extends DeepReadonly<Value>
+            ? (null extends Value ? V | null : Exclude<V, null>) | (undefined extends V ? undefined : never)
+            : Value | undefined
+        >
+      >
     > {
       const warn = Warn.create()
       try {
@@ -134,11 +158,7 @@ export namespace Normalizer {
         if (abortSignal?.aborted) throw new Error('Aborted.')
         return new Normalized({
           warningMessage: warn.accumulatedMessage,
-          value: parsedValue as IfAny<
-            V,
-            Value | undefined,
-            V extends DeepReadonly<Value> | undefined ? V : Value | undefined
-          >,
+          value: parsedValue as any,
         })
       } catch (error) {
         return new Normalized({
