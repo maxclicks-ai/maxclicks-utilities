@@ -6,6 +6,11 @@ import { objectHelpers } from '../helpers/native/objectHelpers'
 import type { DeepReadonly, Falsy, IfAny } from '../types/base'
 import { Warn } from './Warn'
 
+// `Normalized` can cross package-instance boundaries in monorepos, so runtime checks must not rely on
+// constructor identity. The shared symbol marker below intentionally lives on the prototype instead.
+/** Result container holding either a normalized value (with optional warning) or an error. */
+const normalizedTypeSymbol = Symbol.for('maxclicks-ai.utilities.Normalizer.Normalized')
+
 /**
  * A composable validation and transformation pipeline for parsing input values.
  *
@@ -197,8 +202,11 @@ export namespace Normalizer {
     }
   }
 
-  /** Result container holding either a normalized value (with optional warning) or an error. */
   export class Normalized<Value> {
+    private get [normalizedTypeSymbol](): true {
+      return true
+    }
+
     constructor(
       private readonly state:
         | {
@@ -212,6 +220,10 @@ export namespace Normalizer {
             readonly value: Value
           }
     ) {}
+
+    static isNormalized(value: unknown): value is Normalized<any> {
+      return typeof value === 'object' && value !== null && (value as any)[normalizedTypeSymbol] === true
+    }
 
     /** Error message if normalization failed. */
     get errorMessage(): string | undefined {
@@ -263,7 +275,9 @@ export namespace Normalizer {
     static combine<T extends { readonly [K in string]: any } | readonly any[]>(
       normalizedItems: T,
       labelByKey?: { readonly [K in keyof T]?: string | Falsy }
-    ): Normalized<{ -readonly [K in keyof T]: T[K] extends Normalized<infer V> ? V : T[K] }> {
+    ): Normalized<{
+      -readonly [K in keyof T]: T[K] extends Normalized<infer V> ? V : T[K]
+    }> {
       const normalizedItemsWithRedefinedKeys = (
         Array.isArray(normalizedItems)
           ? arrayHelpers.toDictionary(
@@ -279,21 +293,23 @@ export namespace Normalizer {
 
       const errorMessage = combineMessages(
         objectHelpers.map(normalizedItemsWithRedefinedKeys, (key, value) =>
-          value instanceof Normalized ? value.errorMessage : undefined
+          Normalized.isNormalized(value) ? value.errorMessage : undefined
         )
       )
       if (errorMessage) return new Normalized({ errorMessage })
 
       const warningMessage = combineMessages(
         objectHelpers.map(normalizedItemsWithRedefinedKeys, (key, value) =>
-          value instanceof Normalized ? value.warningMessage : undefined
+          Normalized.isNormalized(value) ? value.warningMessage : undefined
         )
       )
       const value = Array.isArray(normalizedItems)
-        ? (normalizedItems as readonly Normalized<any>[]).map(item => (item instanceof Normalized ? item.value : item))
+        ? (normalizedItems as readonly Normalized<any>[]).map(item =>
+            Normalized.isNormalized(item) ? item.value : item
+          )
         : objectHelpers.onlyExisting(
             objectHelpers.map(normalizedItems as { readonly [K in string]: Normalized<any> }, (key, value) =>
-              value instanceof Normalized ? value.value : value
+              Normalized.isNormalized(value) ? value.value : value
             )
           )
 
@@ -374,10 +390,9 @@ export namespace Normalizer {
   }
 
   /** Creates a parser that validates string is a value from an enum object. */
-  export function stringEnum<E extends string>(enumObject: { readonly [K in string]: E }): ParseOrThrow<
-    E | null,
-    string | null
-  > {
+  export function stringEnum<E extends string>(enumObject: {
+    readonly [K in string]: E
+  }): ParseOrThrow<E | null, string | null> {
     return stringEnumValues(...Object.values(enumObject))
   }
 
