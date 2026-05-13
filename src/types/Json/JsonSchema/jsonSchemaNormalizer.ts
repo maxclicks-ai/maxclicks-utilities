@@ -1,9 +1,9 @@
-import { arrayHelpers } from '../../../helpers/native/arrayHelpers'
 import { objectHelpers } from '../../../helpers/native/objectHelpers'
 import { normalizeArrayInline } from '../../../helpers/normalizeArrayInline'
 import { normalizeObjectInline } from '../../../helpers/normalizeObjectInline'
 import { descriptionNormalizer } from '../../../modules/common-normalizers/descriptionNormalizer'
 import { Normalizer } from '../../Normalizer'
+import { Json } from '../Json'
 import { jsonNormalizer } from '../jsonNormalizer'
 import { JsonSchema } from './JsonSchema'
 
@@ -18,36 +18,30 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
     examples: Normalizer.array.chain(Normalizer.arrayItems(jsonNormalizer)).required.normalizeIfExists(schema.examples),
   }
 
-  if (schema.type === undefined && !('const' in schema) && !('enum' in schema))
+  if (Json.Schema.Any.check(schema))
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
     } satisfies Normalizer.Normalized.Items<JsonSchema.Any>).getValue(warn) as JsonSchema.Any
 
-  if (schema.type === undefined && 'const' in schema)
+  if (Json.Schema.Const.check(schema))
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
       const: jsonNormalizer.normalize(schema.const),
     } satisfies Normalizer.Normalized.Items<JsonSchema.Const>).getValue(warn) as JsonSchema.Const
 
-  if (schema.type === undefined && 'enum' in schema)
+  if (Json.Schema.Enum.check(schema))
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
       enum: Normalizer.array.chain(Normalizer.arrayItems(jsonNormalizer)).required.normalize(schema.enum),
     } satisfies Normalizer.Normalized.Items<JsonSchema.Enum>).getValue(warn) as JsonSchema.Enum
 
-  if (schema.type === 'null')
+  if (Json.Schema.Null.check(schema))
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
       type: 'null',
     } satisfies Normalizer.Normalized.Items<JsonSchema.Null>).getValue(warn) as JsonSchema.Null
 
-  if (
-    schema.type === 'string' ||
-    (arrayHelpers.isArray(schema.type) &&
-      schema.type.length === 2 &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('string') &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('null'))
-  ) {
+  if (Json.Schema.String.check(schema)) {
     const stringSchema = schema as JsonSchema.String
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
@@ -58,13 +52,7 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
     } satisfies Normalizer.Normalized.Items<JsonSchema.String>).getValue(warn) as JsonSchema.String
   }
 
-  if (
-    schema.type === 'number' ||
-    (arrayHelpers.isArray(schema.type) &&
-      schema.type.length === 2 &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('number') &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('null'))
-  ) {
+  if (Json.Schema.Number.check(schema)) {
     const numberSchema = schema as JsonSchema.Number
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
@@ -77,13 +65,7 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
     } satisfies Normalizer.Normalized.Items<JsonSchema.Number>).getValue(warn) as JsonSchema.Number
   }
 
-  if (
-    schema.type === 'integer' ||
-    (arrayHelpers.isArray(schema.type) &&
-      schema.type.length === 2 &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('integer') &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('null'))
-  ) {
+  if (Json.Schema.Integer.check(schema)) {
     const integerSchema = schema as JsonSchema.Integer
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
@@ -96,13 +78,7 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
     } satisfies Normalizer.Normalized.Items<JsonSchema.Integer>).getValue(warn) as JsonSchema.Integer
   }
 
-  if (
-    schema.type === 'boolean' ||
-    (arrayHelpers.isArray(schema.type) &&
-      schema.type.length === 2 &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('boolean') &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('null'))
-  ) {
+  if (Json.Schema.Boolean.check(schema)) {
     const booleanSchema = schema as JsonSchema.Boolean
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
@@ -110,13 +86,7 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
     } satisfies Normalizer.Normalized.Items<JsonSchema.Boolean>).getValue(warn) as JsonSchema.Boolean
   }
 
-  if (
-    schema.type === 'array' ||
-    (arrayHelpers.isArray(schema.type) &&
-      schema.type.length === 2 &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('array') &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('null'))
-  ) {
+  if (Json.Schema.Array.check(schema)) {
     const arraySchema = schema as JsonSchema.Array
     return Normalizer.Normalized.combine({
       ...baseNormalizedItems,
@@ -127,13 +97,7 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
     } satisfies Normalizer.Normalized.Items<JsonSchema.Array>).getValue(warn) as JsonSchema.Array
   }
 
-  if (
-    schema.type === 'object' ||
-    (arrayHelpers.isArray(schema.type) &&
-      schema.type.length === 2 &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('object') &&
-      (schema.type as readonly (typeof schema.type)[number][]).includes('null'))
-  ) {
+  if (Json.Schema.Object.check(schema)) {
     const objectSchema = schema as JsonSchema.Object
     const propertiesNormalized = normalizeObjectInline(objectSchema.properties, properties =>
       objectHelpers.map(objectHelpers.onlyExisting(properties), (key, value) =>
@@ -164,7 +128,7 @@ export const jsonSchemaNormalizer = Normalizer.object.required.chain((value, war
     } satisfies Normalizer.Normalized.Items<JsonSchema.Object>).getValue(warn) as JsonSchema.Object
   }
 
-  throw new Error(`Unsupported type ${JSON.stringify(schema.type)}.`)
+  throw new Error(`Unsupported type ${JSON.stringify((schema as any).type)}.`)
 })
 
 export namespace jsonSchemaNormalizer {}

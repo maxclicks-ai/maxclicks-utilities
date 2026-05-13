@@ -8,7 +8,7 @@ import { Json } from './Json'
 import { jsonNormalizer } from './jsonNormalizer'
 import { JsonSchema } from './JsonSchema'
 
-export function jsonNormalizerWithSchemaFactory<T = Json>(jsonSchema: JsonSchema): Normalizer<T> {
+export function jsonNormalizerWithSchemaFactory<T extends {} | null = Json>(jsonSchema: JsonSchema): Normalizer<T> {
   return jsonNormalizer.chain((value, warn): T => normalize(value, jsonSchema, warn, undefined) as T)
 }
 
