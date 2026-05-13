@@ -16,11 +16,11 @@ import { Warn } from './Warn'
  *   .chain(value => { if (!isValidEmail(value)) throw new Error('Invalid email'); return value })
  * ```
  */
-export class Normalizer<Value> {
+export class Normalizer<Value extends {} | null> {
   constructor(readonly parseOrThrow: Normalizer.ParseOrThrow<Value>) {}
 
   /** Runs the normalizer, returning a `Normalized` result with value or error. */
-  normalize<V>(
+  normalize<V extends {} | null>(
     value: V
   ): Normalizer.Normalized<
     IfAny<
@@ -74,12 +74,14 @@ export class Normalizer<Value> {
   }
 
   /** Chains another synchronous transformation step. */
-  chain<NewValue>(parseOrThrow: Normalizer.ParseOrThrow<NewValue, Value>): Normalizer<NewValue> {
+  chain<NewValue extends {} | null>(parseOrThrow: Normalizer.ParseOrThrow<NewValue, Value>): Normalizer<NewValue> {
     return new Normalizer((value, warn) => parseOrThrow(this.parseOrThrow(value, warn), warn))
   }
 
   /** Chains an asynchronous transformation step, converting to `Normalizer.Async`. */
-  chainAsync<NewValue>(parseOrThrowAsync: Normalizer.ParseOrThrowAsync<NewValue, Value>): Normalizer.Async<NewValue> {
+  chainAsync<NewValue extends {} | null>(
+    parseOrThrowAsync: Normalizer.ParseOrThrowAsync<NewValue, Value>
+  ): Normalizer.Async<NewValue> {
     return new Normalizer.Async((value, warn, abortSignal) =>
       parseOrThrowAsync(this.parseOrThrow(value, warn), warn, abortSignal)
     )
@@ -87,7 +89,7 @@ export class Normalizer<Value> {
 
   /** Creates a normalizer that throws if value is null, empty string, or empty array. */
   get required(): Normalizer<Exclude<Value, null>> {
-    return this.chain((value, warn) => {
+    return this.chain((value: any, warn) => {
       if (
         (!value && value !== 0 && !Number.isNaN(value) && value !== false) ||
         (Array.isArray(value) && value.length === 0)
@@ -100,11 +102,11 @@ export class Normalizer<Value> {
 
 export namespace Normalizer {
   /** Async variant of `Normalizer` for pipelines with async steps. */
-  export class Async<Value> {
+  export class Async<Value extends {} | null> {
     constructor(readonly parseOrThrowAsync: ParseOrThrowAsync<Value>) {}
 
     /** Runs the async normalizer, returning a `Normalized` result. */
-    async normalize<V>(
+    async normalize<V extends {} | null>(
       value: V,
       abortSignal?: AbortSignal
     ): Promise<
@@ -168,14 +170,14 @@ export namespace Normalizer {
     }
 
     /** Chains a synchronous transformation step. */
-    chain<NewValue>(parseOrThrow: ParseOrThrow<NewValue, Value>): Async<NewValue> {
+    chain<NewValue extends {} | null>(parseOrThrow: ParseOrThrow<NewValue, Value>): Async<NewValue> {
       return new Async(async (value, warn, abortSignal) =>
         parseOrThrow(await this.parseOrThrowAsync(value, warn, abortSignal), warn)
       )
     }
 
     /** Chains an asynchronous transformation step. */
-    chainAsync<NewValue>(parseOrThrowAsync: ParseOrThrowAsync<NewValue, Value>): Async<NewValue> {
+    chainAsync<NewValue extends {} | null>(parseOrThrowAsync: ParseOrThrowAsync<NewValue, Value>): Async<NewValue> {
       return new Async(
         async (value, warn, abortSignal) =>
           await parseOrThrowAsync(await this.parseOrThrowAsync(value, warn, abortSignal), warn, abortSignal)
@@ -184,7 +186,7 @@ export namespace Normalizer {
 
     /** Creates an async normalizer that throws if value is null, empty string, or empty array. */
     get required(): Async<Exclude<Value, null>> {
-      return this.chain((value, warn) => {
+      return this.chain((value: any, warn) => {
         if (
           (!value && value !== 0 && !Number.isNaN(value) && value !== false) ||
           (Array.isArray(value) && value.length === 0)
@@ -325,10 +327,10 @@ export namespace Normalizer {
   }
 
   /** Synchronous parser function signature. Throws on validation failure. */
-  export type ParseOrThrow<ToValue, FromValue = any> = (value: FromValue, warn: Warn) => ToValue
+  export type ParseOrThrow<ToValue extends {} | null, FromValue = any> = (value: FromValue, warn: Warn) => ToValue
 
   /** Async parser function signature. Throws on validation failure. */
-  export type ParseOrThrowAsync<ToValue, FromValue = any> = (
+  export type ParseOrThrowAsync<ToValue extends {} | null, FromValue = any> = (
     value: FromValue,
     warn: Warn,
     abortSignal: AbortSignal | undefined
@@ -466,7 +468,9 @@ export namespace Normalizer {
   })
 
   /** Simplifies normalization of array items with a stronger type guarantee. */
-  export function arrayItems<I>(itemNormalizer: Normalizer<I>): Normalizer.ParseOrThrow<I[] | null, any[] | null> {
+  export function arrayItems<I extends {} | null>(
+    itemNormalizer: Normalizer<I>
+  ): Normalizer.ParseOrThrow<I[] | null, any[] | null> {
     return (value, warn) => {
       if (!value) return null
       return Normalized.combine(value.map(item => itemNormalizer.normalize(item))).getValue(warn)
