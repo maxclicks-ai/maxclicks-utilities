@@ -55,6 +55,11 @@ export type DeepPartial<T> = T extends BuiltIns
 /** Narrows a union type `U` to members with a specific `type` discriminant. */
 export type WithType<U extends { readonly type?: any }, T extends U['type']> = U & { readonly type: T }
 
+/** Narrows a union type `U` to members without a specific `type` discriminant. */
+export type WithoutType<U extends { readonly type?: any }, T extends U['type']> = U & {
+  readonly type: Exclude<U['type'], T>
+}
+
 /**
  * Works along with the `typed()` helper function to help define objects with
  * specific types that _extend_ some other type.
