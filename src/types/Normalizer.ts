@@ -95,11 +95,7 @@ export class Normalizer<Value extends {} | null> {
   /** Creates a normalizer that throws if value is null, empty string, or empty array. */
   get required(): Normalizer<Exclude<Value, null>> {
     return this.chain((value: any, warn) => {
-      if (
-        (!value && value !== 0 && !Number.isNaN(value) && value !== false) ||
-        (Array.isArray(value) && value.length === 0)
-      )
-        throw new Error('Required.')
+      if (!value && value !== 0 && !Number.isNaN(value) && value !== false) throw new Error('Required.')
       return value as Exclude<Value, null>
     })
   }
@@ -192,11 +188,7 @@ export namespace Normalizer {
     /** Creates an async normalizer that throws if value is null, empty string, or empty array. */
     get required(): Async<Exclude<Value, null>> {
       return this.chain((value: any, warn) => {
-        if (
-          (!value && value !== 0 && !Number.isNaN(value) && value !== false) ||
-          (Array.isArray(value) && value.length === 0)
-        )
-          throw new Error('Required.')
+        if (!value && value !== 0 && !Number.isNaN(value) && value !== false) throw new Error('Required.')
         return value as Exclude<Value, null>
       })
     }
