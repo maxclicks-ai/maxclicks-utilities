@@ -444,13 +444,11 @@ export namespace Normalizer {
   export const object = new Normalizer((value, warn) => {
     if (value === null) return null
     if (!value || typeof value !== 'object' || arrayHelpers.isArray(value)) throw new Error('Expected an object.')
-    return value as Record<string, any>
+    return value as any
   })
 
   /** Creates a parser that throws if object is missing required keys. */
-  export function objectRequireKeys(
-    ...keys: readonly string[]
-  ): ParseOrThrow<Record<string, any> | null, Record<string, any> | null> {
+  export function objectRequireKeys(...keys: readonly string[]): ParseOrThrow<any | null, any | null> {
     return (value, warn) => {
       if (!value) return value
       const missingKeys = keys.filter(key => value[key] === undefined)
@@ -463,7 +461,7 @@ export namespace Normalizer {
   /** Simplifies normalization of object properties with a stronger type guarantee. */
   export function objectProperties<T extends {}>(
     normalizeProperties: (value: T) => Normalized.Items<T>
-  ): ParseOrThrow<T | null, Record<string, any> | null> {
+  ): ParseOrThrow<T | null, any | null> {
     return (value, warn) => (value ? (Normalized.combine(normalizeProperties(value as T)).getValue(warn) as T) : null)
   }
 
