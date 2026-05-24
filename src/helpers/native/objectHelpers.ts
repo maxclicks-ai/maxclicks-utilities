@@ -17,27 +17,28 @@ interface ObjectHelpers {
 
   map<T, U>(opject: T, mapper: (key: keyof T, value: T[keyof T]) => U): Record<keyof T, U>
 
-  mergeInto<E, T>(
-    extension: E,
-    objectFactory: (extension: E) => T
-  ): (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
-    (T extends readonly any[]
-      ? T
-      : T extends Readonly<Record<string, any>>
-        ? { [K in Exclude<keyof T, keyof E>]: T[K] }
-        : T) &
-    E
-  extendBy<T, E>(
+  mergeInto<E, T>(extension: E, objectFactory: (extension: E) => T): ExtendBy<T, E>
+  extendBy<T, E>(object: T, extensionFactory: (object: T) => E): ExtendBy<T, E>
+  extendBy<T, E1, E2>(
     object: T,
-    extensionFactory: (object: T) => E
-  ): (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
-    (T extends readonly any[]
-      ? T
-      : T extends Readonly<Record<string, any>>
-        ? { [K in Exclude<keyof T, keyof E>]: T[K] }
-        : T) &
-    E
+    extensionFactory1: (object: T) => E1,
+    extensionFactory2: (object: ExtendBy<T, E1>) => E2
+  ): ExtendBy<ExtendBy<T, E1>, E2>
+  extendBy<T, E1, E2, E3>(
+    object: T,
+    extensionFactory1: (object: T) => E1,
+    extensionFactory2: (object: ExtendBy<T, E1>) => E2,
+    extensionFactory3: (object: ExtendBy<ExtendBy<T, E1>, E2>) => E3
+  ): ExtendBy<ExtendBy<ExtendBy<T, E1>, E2>, E3>
 }
+
+type ExtendBy<T, E> = (T extends (...args: infer Parameters) => infer Result ? (...args: Parameters) => Result : {}) &
+  (T extends readonly any[]
+    ? T
+    : T extends Readonly<Record<string, any>>
+      ? { [K in Exclude<keyof T, keyof E>]: T[K] }
+      : T) &
+  E
 
 const integerRegex = /^[0-9]+$/
 
@@ -112,7 +113,10 @@ export const objectHelpers: ObjectHelpers = {
   mergeInto(extension: any, objectFactory: (extension: any) => any): any {
     return Object.assign(objectFactory(extension), extension)
   },
-  extendBy(object: any, extensionFactory: (object: any) => any): any {
-    return Object.assign(object, extensionFactory(object))
+  extendBy(object: any, ...extensionFactories: readonly ((object: any) => any)[]): any {
+    return extensionFactories.reduce(
+      (current, extensionFactory) => Object.assign(current, extensionFactory(current)),
+      object
+    )
   },
 }
