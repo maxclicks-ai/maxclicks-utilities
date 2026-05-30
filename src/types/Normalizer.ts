@@ -8,7 +8,6 @@ import { Warn } from './Warn'
 
 // `Normalized` can cross package-instance boundaries in monorepos, so runtime checks must not rely on
 // constructor identity. The shared symbol marker below intentionally lives on the prototype instead.
-/** Result container holding either a normalized value (with optional warning) or an error. */
 const normalizedTypeSymbol = Symbol.for('maxclicks-ai.utilities.Normalizer.Normalized')
 
 /**
@@ -195,10 +194,6 @@ export namespace Normalizer {
   }
 
   export class Normalized<Value> {
-    private get [normalizedTypeSymbol](): true {
-      return true
-    }
-
     constructor(
       private readonly state:
         | {
@@ -212,6 +207,10 @@ export namespace Normalizer {
             readonly value: Value
           }
     ) {}
+
+    private get [normalizedTypeSymbol](): true {
+      return true
+    }
 
     static isNormalized(value: unknown): value is Normalized<any> {
       return typeof value === 'object' && value !== null && (value as any)[normalizedTypeSymbol] === true
