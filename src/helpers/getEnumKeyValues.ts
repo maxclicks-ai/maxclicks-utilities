@@ -1,5 +1,7 @@
 /** Extracts `{ key, value }` pairs from a TypeScript enum. */
-export function getEnumKeyValues<E>(enumObject: any): { key: string; value: E }[] {
+export function getEnumKeyValues<E extends { readonly [key: string]: string | number }>(
+  enumObject: E
+): { key: string; value: E[keyof E] }[] {
   const allKeys = Object.keys(enumObject)
 
   // Since only keys with number values are stored reversed too:

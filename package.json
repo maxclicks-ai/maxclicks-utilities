@@ -1,6 +1,6 @@
 {
   "name": "@maxclicks/utilities",
-  "version": "1.17.2",
+  "version": "1.18.0",
   "description": "The common utility implementations shared by maxclicks projects",
   "license": "MIT",
   "type": "module",
@@ -74,6 +74,7 @@
     "lefthook": "^2.0.13",
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
+    "tsx": "^4.22.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.50.1"
   }
