@@ -329,7 +329,7 @@ export namespace Normalizer {
      * const combined = Normalizer.Normalized.combine(items) // combined.value is compatible with Type.
      */
     export type Items<T extends { readonly [K in string]: any } | readonly any[]> = {
-      -readonly [K in keyof T]: T[K] | Normalized<T[K]>
+      -readonly [K in keyof Required<T>]: T[K] | Normalized<T[K]> // `Required` is for enforcing all keys to be defined while still letting the optional ones to be `undefined`-able. Requiring keys by `-?` will remove `undefined` from optional keys, which is not desired.
     }
   }
 
