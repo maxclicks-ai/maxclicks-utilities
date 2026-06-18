@@ -4,6 +4,10 @@ export type OmitTyped<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 /** Like `Exclude`, but constrains `U` to extend `T` for type safety. */
 export type ExcludeTyped<T, U extends T> = T extends U ? never : T
 
+export type UndefinedableRequired<T> = {
+  [K in keyof Required<T>]: T[K]
+}
+
 /** Removes `readonly` modifier from all properties of `T`. */
 export type Writable<T> = { -readonly [K in keyof T]: T[K] }
 
