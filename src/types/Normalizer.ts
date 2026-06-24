@@ -258,16 +258,19 @@ export namespace Normalizer {
       warn?.(prependMessage(messagePrefix, this.warningMessage))
       return this.state.value!
     }
+  }
 
+  export namespace Normalized {
+    type Denormalized<T> = T extends Normalized<infer V> ? V : T
     /**
      * Combines multiple `Normalized` results into a single result.
      * Aggregates all errors/warnings with optional labels.
      */
-    static combine<T extends { readonly [K in string]: any } | readonly any[]>(
+    export function combine<T extends { readonly [K in string]: any } | readonly any[]>(
       normalizedItems: T,
       labelByKey?: { readonly [K in keyof T]?: string | Falsy }
     ): Normalized<{
-      -readonly [K in keyof T]: T[K] extends Normalized<infer V> ? V : T[K]
+      -readonly [K in keyof T]: Denormalized<T[K]>
     }> {
       const normalizedItemsWithRedefinedKeys = (
         Array.isArray(normalizedItems)
@@ -309,9 +312,7 @@ export namespace Normalizer {
         value: value as any,
       })
     }
-  }
 
-  export namespace Normalized {
     /**
      * Use it with `satisfies`.
      *
